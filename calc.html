@@ -90,7 +90,7 @@
         <button onclick="appendToDisplay('**')">x<sup>n</sup></button>
         <button onclick="appendToDisplay('0')">0</button>
         <button onclick="appendToDisplay('.')">.</button>
-        <button onclick="deleteLastChar()">←</button>
+        <button onclick="clearDisplay()">←</button>
     </div>
 </div>
 
@@ -108,7 +108,7 @@
             }
         } else if (key === 'Backspace') {
             event.preventDefault();
-            deleteLastChar();
+            clearDisplay();
         } else if (key === 'e') {
             event.preventDefault();
             appendToDisplay('Math.E');
@@ -129,9 +129,17 @@
         } else if (['Math.sin(', 'Math.cos(', 'Math.tan(', 'Math.log10('].includes(value)) {
             display.innerText += value.substring(5, value.length - 1) + '(';
         } else if (value === 'Math.PI') {
-            display.innerText += 'π';
+            if (currentText.endsWith('Math.E') || currentText.endsWith('π')) {
+                display.innerText += '*π';
+            } else {
+                display.innerText += 'π';
+            }
         } else if (value === 'Math.E') {
-            display.innerText += 'e';
+            if (currentText.endsWith('Math.PI') || currentText.endsWith('π')) {
+                display.innerText += '*e';
+            } else {
+                display.innerText += 'e';
+            }
         } else {
             // Insert multiplication if 'π' or 'e' is followed directly by a number
             const lastChar = currentText[currentText.length - 1];
@@ -146,12 +154,6 @@
 
     function clearDisplay() {
         document.getElementById('display').innerText = '';
-    }
-
-    function deleteLastChar() {
-        const display = document.getElementById('display');
-        display.innerText = display.innerText.slice(0, -1);
-        adjustFontSize();
     }
 
     function adjustFontSize() {
@@ -182,8 +184,8 @@
             expression = expression.replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
                                    .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
             
-            // Check if the expression is exactly "Math.PI * Math.E"
-            if (expression === 'Math.PI * Math.E') {
+            // Special case for (π e)
+            if (/Math\.PI\s*\*\s*Math\.E/.test(expression) || /π\s*\*\s*e/.test(expression)) {
                 const newWindow = window.open('', '_blank');
                 newWindow.document.open();
                 newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="calc(1).html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
@@ -201,6 +203,7 @@
                 newWindow.document.close();
             }
         } catch (error) {
+            console.error('Calculation error:', error);
             document.getElementById('display').innerText = 'Error';
         }
     }
