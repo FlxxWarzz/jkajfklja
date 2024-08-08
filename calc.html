@@ -97,6 +97,8 @@
 <script>
     document.addEventListener('keydown', function(event) {
         const key = event.key;
+        const display = document.getElementById('display');
+        
         if (/\d/.test(key) || ['/', '*', '-', '+', '(', ')', '.', 'Enter'].includes(key)) {
             event.preventDefault();
             if (key === 'Enter') {
@@ -107,15 +109,23 @@
         } else if (key === 'Backspace') {
             event.preventDefault();
             deleteLastChar();
+        } else if (key === 'e') {
+            event.preventDefault();
+            appendToDisplay('Math.E');
+        } else if (key === 'p') {
+            event.preventDefault();
+            appendToDisplay('Math.PI');
         }
     });
 
     function appendToDisplay(value) {
         const display = document.getElementById('display');
+        let currentText = display.innerText;
+
         if (value === 'Math.sqrt(') {
             display.innerText += '√(';
-        } else if (value === 'Math.pow(') {
-            display.innerText += '**(';
+        } else if (value === '**') {
+            display.innerText += '**';
         } else if (['Math.sin(', 'Math.cos(', 'Math.tan(', 'Math.log10('].includes(value)) {
             display.innerText += value.substring(5, value.length - 1) + '(';
         } else if (value === 'Math.PI') {
@@ -123,7 +133,13 @@
         } else if (value === 'Math.E') {
             display.innerText += 'e';
         } else {
-            display.innerText += value;
+            // Insert multiplication if 'π' or 'e' is followed directly by a number
+            const lastChar = currentText[currentText.length - 1];
+            if ((lastChar === 'π' || lastChar === 'e') && /\d/.test(value)) {
+                display.innerText += '*' + value;
+            } else {
+                display.innerText += value;
+            }
         }
         adjustFontSize();
     }
@@ -140,23 +156,42 @@
 
     function adjustFontSize() {
         const display = document.getElementById('display');
-        const fontSize = parseFloat(window.getComputedStyle(display).fontSize);
+        let fontSize = parseFloat(window.getComputedStyle(display).fontSize);
         while (display.scrollWidth > display.clientWidth && fontSize > 10) {
             display.style.fontSize = (fontSize - 1) + 'px';
+            fontSize -= 1;
         }
     }
 
     function calculate() {
         try {
-            const expression = document.getElementById('display').innerText
+            let expression = document.getElementById('display').innerText
                 .replace(/π/g, 'Math.PI')
                 .replace(/e/g, 'Math.E')
                 .replace(/√\(/g, 'Math.sqrt(')
-                .replace(/x\^/g, '**')
+                .replace(/\*\*/g, '**')
                 .replace(/sin/g, 'Math.sin')
                 .replace(/cos/g, 'Math.cos')
                 .replace(/tan/g, 'Math.tan')
                 .replace(/log/g, 'Math.log10');
+            
+            // Handle implicit multiplication for 'π e'
+            expression = expression.replace(/π\s+e/g, 'Math.PI * Math.E');
+            
+            // Ensure implicit multiplication is handled correctly
+            expression = expression.replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
+                                   .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
+            
+            // Check if the expression is exactly "Math.PI * Math.E"
+            if (expression === 'Math.PI * Math.E') {
+                const newWindow = window.open('', '_blank');
+                newWindow.document.open();
+                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="calc(1).html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
+                newWindow.document.close();
+                return;
+            }
+            
+            // Evaluate the expression if not the special case
             const result = eval(expression);
             document.getElementById('display').innerText = result;
             if (Math.abs(result - (9 / 11)) < 0.0001) {
