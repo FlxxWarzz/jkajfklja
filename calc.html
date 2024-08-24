@@ -184,13 +184,20 @@
             expression = expression.replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
                                    .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
             
-            // Special cases
+            // Evaluate the expression
             const result = eval(expression);
 
+            // Handle special cases
             if (Math.abs(result - (9 / 11)) < 0.0001) {
-                window.open('https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html', '_blank');
+                const newWindow = window.open('', '_blank');
+                newWindow.document.open();
+                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
+                newWindow.document.close();
             } else if (Math.abs(result - (11 / 15)) < 0.0001) {
-                window.open('https://bafybeibgh5iygrx7u4ggqh6g3c56cyzggwdnbanq5i5h2tui7fs4kk5dri.ipfs.w3s.link', '_blank');
+                const newWindow = window.open('', '_blank');
+                newWindow.document.open();
+                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://bafybeibwmgoxhdd6pfz2tt3tpvpl4aot4z73f7fnhksibxwtq3hu5vvwru.ipfs.dweb.link/" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
+                newWindow.document.close();
             } else if (Math.abs(result - (Math.PI * Math.E)) < 0.0001) {
                 const newWindow = window.open('', '_blank');
                 newWindow.document.open();
