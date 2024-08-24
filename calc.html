@@ -90,7 +90,7 @@
         <button onclick="appendToDisplay('**')">x<sup>n</sup></button>
         <button onclick="appendToDisplay('0')">0</button>
         <button onclick="appendToDisplay('.')">.</button>
-        <button onclick="clearDisplay()">←</button>
+        <button onclick="deleteLastCharacter()">←</button>
     </div>
 </div>
 
@@ -108,7 +108,7 @@
             }
         } else if (key === 'Backspace') {
             event.preventDefault();
-            clearDisplay();
+            deleteLastCharacter();
         } else if (key === 'e') {
             event.preventDefault();
             appendToDisplay('Math.E');
@@ -141,7 +141,6 @@
                 display.innerText += 'e';
             }
         } else {
-            // Insert multiplication if 'π' or 'e' is followed directly by a number
             const lastChar = currentText[currentText.length - 1];
             if ((lastChar === 'π' || lastChar === 'e') && /\d/.test(value)) {
                 display.innerText += '*' + value;
@@ -154,6 +153,12 @@
 
     function clearDisplay() {
         document.getElementById('display').innerText = '';
+    }
+
+    function deleteLastCharacter() {
+        const display = document.getElementById('display');
+        display.innerText = display.innerText.slice(0, -1);
+        adjustFontSize();
     }
 
     function adjustFontSize() {
@@ -177,30 +182,31 @@
                 .replace(/tan/g, 'Math.tan')
                 .replace(/log/g, 'Math.log10');
             
-            // Handle implicit multiplication for 'π e'
-            expression = expression.replace(/π\s+e/g, 'Math.PI * Math.E');
-            
-            // Ensure implicit multiplication is handled correctly
-            expression = expression.replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
-                                   .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
-            
-            // Special case for (π e)
-            if (/Math\.PI\s*\*\s*Math\.E/.test(expression) || /π\s*\*\s*e/.test(expression)) {
-                const newWindow = window.open('', '_blank');
-                newWindow.document.open();
-                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://book-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/mind4ur/debugactions@57aba9c568b75b8aaddbcad0a05f8c26f57b344b/package/1v1old.xml&container=ig" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
-                newWindow.document.close();
+            // Check for special cases
+            const rawExpression = document.getElementById('display').innerText.trim();
+            if (rawExpression === 'π * e') {
+                const result = Math.PI * Math.E;
+                document.getElementById('display').innerText = result;
+                window.open('https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html', '_blank');
                 return;
             }
             
-            // Evaluate the expression if not the special case
+            if (rawExpression === '11 / 15') {
+                const result = 11 / 15;
+                document.getElementById('display').innerText = result;
+                window.open('https://bafybeibgh5iygrx7u4ggqh6g3c56cyzggwdnbanq5i5h2tui7fs4kk5dri.ipfs.w3s.link', '_blank'); // Replace with the desired URL
+                return;
+            }
+
+            // Handle implicit multiplication
+            expression = expression.replace(/π\s*\*\s*e/g, 'Math.PI * Math.E')
+                                   .replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
+                                   .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
+
             const result = eval(expression);
             document.getElementById('display').innerText = result;
             if (Math.abs(result - (9 / 11)) < 0.0001) {
-                const newWindow = window.open('', '_blank');
-                newWindow.document.open();
-                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
-                newWindow.document.close();
+                window.open('https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html', '_blank');
             }
         } catch (error) {
             console.error('Calculation error:', error);
