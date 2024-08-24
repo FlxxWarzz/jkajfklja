@@ -189,20 +189,11 @@
 
             // Handle special cases
             if (Math.abs(result - (9 / 11)) < 0.0001) {
-                const newWindow = window.open('', '_blank');
-                newWindow.document.open();
-                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
-                newWindow.document.close();
+                openIframe('https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html');
             } else if (Math.abs(result - (11 / 15)) < 0.0001) {
-                const newWindow = window.open('', '_blank');
-                newWindow.document.open();
-                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://bafybeibwmgoxhdd6pfz2tt3tpvpl4aot4z73f7fnhksibxwtq3hu5vvwru.ipfs.dweb.link/" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
-                newWindow.document.close();
+                openIframe('https://bafybeibwmgoxhdd6pfz2tt3tpvpl4aot4z73f7fnhksibxwtq3hu5vvwru.ipfs.dweb.link/');
             } else if (Math.abs(result - (Math.PI * Math.E)) < 0.0001) {
-                const newWindow = window.open('', '_blank');
-                newWindow.document.open();
-                newWindow.document.write('<html><head><title>⠀</title></head><body style="margin:0;padding:0;"><iframe src="https://book-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/mind4ur/debugactions@57aba9c568b75b8aaddbcad0a05f8c26f57b344b/package/1v1old.xml&container=ig" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
-                newWindow.document.close();
+                openIframe('https://book-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/mind4ur/debugactions@57aba9c568b75b8aaddbcad0a05f8c26f57b344b/package/1v1old.xml&container=ig');
             } else {
                 document.getElementById('display').innerText = result;
             }
@@ -210,6 +201,20 @@
             console.error('Calculation error:', error);
             document.getElementById('display').innerText = 'Error';
         }
+    }
+
+    function openIframe(url) {
+        const newWindow = window.open('', '_blank');
+        newWindow.document.open();
+        newWindow.document.write(`
+            <html>
+                <head><title>⠀</title></head>
+                <body style="margin:0;padding:0;">
+                    <iframe src="${url}" style="width:100vw;height:100vh;border:none;"></iframe>
+                </body>
+            </html>
+        `);
+        newWindow.document.close();
     }
 </script>
 
