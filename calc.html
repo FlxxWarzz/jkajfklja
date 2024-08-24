@@ -94,6 +94,7 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.7.2/math.min.js"></script>
 <script>
     document.addEventListener('keydown', function(event) {
         const key = event.key;
@@ -181,31 +182,27 @@
                 .replace(/cos/g, 'Math.cos')
                 .replace(/tan/g, 'Math.tan')
                 .replace(/log/g, 'Math.log10');
-            
-            // Check for special cases
-            const rawExpression = document.getElementById('display').innerText.trim();
-            if (rawExpression === 'π * e') {
-                const result = Math.PI * Math.E;
-                document.getElementById('display').innerText = result;
-                window.open('https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html', '_blank');
-                return;
-            }
-            
-            if (rawExpression === '11 / 15') {
-                const result = 11 / 15;
-                document.getElementById('display').innerText = result;
-                window.open('https://bafybeibgh5iygrx7u4ggqh6g3c56cyzggwdnbanq5i5h2tui7fs4kk5dri.ipfs.w3s.link', '_blank'); // Replace with the desired URL
-                return;
-            }
 
             // Handle implicit multiplication
             expression = expression.replace(/π\s*\*\s*e/g, 'Math.PI * Math.E')
                                    .replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
                                    .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
 
-            const result = eval(expression);
+            // Check for special cases
+            const rawExpression = document.getElementById('display').innerText.trim();
+            const result = math.evaluate(expression);
             document.getElementById('display').innerText = result;
+
+            // Adjust conditions for opening URLs
             if (Math.abs(result - (9 / 11)) < 0.0001) {
+                window.open('about:blank', '_blank'); // Opens a blank page
+            }
+
+            if (Math.abs(result - (11 / 15)) < 0.0001) {
+                window.open('https://bafybeibgh5iygrx7u4ggqh6g3c56cyzggwdnbanq5i5h2tui7fs4kk5dri.ipfs.w3s.link', '_blank');
+            }
+
+            if (Math.abs(result - (Math.PI * Math.E)) < 0.0001) {
                 window.open('https://html-classic.itch.zone/html/11168251/WebGL-169-Production/index.html', '_blank');
             }
         } catch (error) {
