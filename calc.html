@@ -36,6 +36,7 @@
             font-weight: bold;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .calculator__buttons {
             display: grid;
@@ -184,6 +185,12 @@
             expression = expression.replace(/(\d)(Math.PI|Math.E)/g, '$1*$2')
                                    .replace(/(Math.PI|Math.E)(\d)/g, '$1*$2');
             
+            // Check for exact match of '4.2/0'
+            if (document.getElementById('display').innerText === '4.2/0') {
+                window.location.href = 'https://example.com'; // Redirect to desired URL
+                return;
+            }
+
             // Evaluate the expression
             const result = eval(expression);
 
