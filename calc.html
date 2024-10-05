@@ -187,7 +187,7 @@
             
             // Check for exact match of '4.2/0'
             if (document.getElementById('display').innerText === '4.2/0') {
-                openIframe('https://freefy.app/'); // Open the link in an iframe
+                openIframe('https://webvideoplayer.org/player.html'); // Open the link in an iframe
                 return;
             }
 
@@ -196,11 +196,11 @@
 
             // Handle special cases
             if (Math.abs(result - (9 / 11)) < 0.0001) {
-                openIframe('https://freefy.app/');
+                openIframe('https://webvideoplayer.org/player.html');
             } else if (Math.abs(result - (11 / 15)) < 0.0001) {
-                openIframe('https://freefy.app/');
+                openIframe('https://webvideoplayer.org/player.html');
             } else if (Math.abs(result - (Math.PI * Math.E)) < 0.0001) {
-                openIframe('https://freefy.app/');
+                openIframe('https://webvideoplayer.org/player.html');
             } else {
                 document.getElementById('display').innerText = result;
             }
